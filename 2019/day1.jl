@@ -1,7 +1,7 @@
 println("-"^10,"DAY 1","-"^10)
 # Read all lines of the files and convert to int
 f = readlines("2019/datas/input_day_1.txt")
-masses = [parse(Int64,el) for el in f]
+masses = parse.(Int64,f)
 println("Data loaded...")
 
 # Part 1
