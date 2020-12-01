@@ -1,4 +1,5 @@
 using DelimitedFiles
+using  BenchmarkTools
 
 const TARGET = 2020
 path = joinpath(@__DIR__,"2020","Day1","datas","input.txt")
@@ -16,15 +17,6 @@ end
 
 compute_expense(data,idx_tuple) = data[idx_tuple[1]] * data[idx_tuple[2]]
 
-data = readdlm(path, '\n', Int)
-hash = create_map(data)
-
-# Part 1
-idx = find_idx(data, hash)
-result = compute_expense(data, idx)
-
-# Part 2
-
 function find_idx_3(data,hash)
     for (i,d) ∈ enumerate(data)
         first = d
@@ -40,6 +32,17 @@ function find_idx_3(data,hash)
 end
 
 compute_expense_3(data,idx_tuple) = data[idx_tuple[1]] * data[idx_tuple[2]] * data[idx_tuple[3]]
+
+# Part 1
+function solution_part_1()
+    hash = create_map(data)
+    idx = find_idx(data, hash)
+    compute_expense(data, idx)
+end
+
+@btime solution_part_1()
+
+# Part 2
 
 idx3 = find_idx_3(data,hash)
 result2 = compute_expense_3(data,idx3)
