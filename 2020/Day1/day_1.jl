@@ -3,8 +3,8 @@ using  BenchmarkTools
 
 const TARGET = 2020
 path = joinpath(@__DIR__,"2020","Day1","datas","input.txt")
-
-create_map(data) = Dict(d => i for (i, d) ∈ enumerate(data))
+data = readdlm(path, '\n', Int32)
+hash = Dict{Int32,Int16}(d => i for (i, d) ∈ enumerate(data))
 
 function find_idx(data, hash)
     for (i, d) ∈ enumerate(data)
@@ -34,15 +34,17 @@ end
 compute_expense_3(data,idx_tuple) = data[idx_tuple[1]] * data[idx_tuple[2]] * data[idx_tuple[3]]
 
 # Part 1
-function solution_part_1()
-    hash = create_map(data)
+function solution_part_1(data,hash)
     idx = find_idx(data, hash)
     compute_expense(data, idx)
 end
 
-@btime solution_part_1()
+@btime solution_part_1($data,$hash)
 
 # Part 2
+function solution_part_2(data,hash)
+    idx = find_idx_3(data, hash)
+    compute_expense_3(data, idx)
+end
 
-idx3 = find_idx_3(data,hash)
-result2 = compute_expense_3(data,idx3)
+@btime solution_part_2($data,$hash)
