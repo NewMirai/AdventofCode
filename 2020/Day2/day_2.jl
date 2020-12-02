@@ -1,27 +1,23 @@
 using BenchmarkTools
-path = joinpath(@__DIR__,"2020","Day2","datas","input.txt")
+path = joinpath(@__DIR__, "2020", "Day2", "datas", "input.txt")
 
-function solution_part_1(path)
-    sums = 0
-    for line in eachline(path)
-        policy,password = split(line,':')
-        range, c= split(policy)
-        low_range,high_range = parse.(UInt8,split(range,'-'))
-        counts = count(c,password)
-        if counts >= low_range && counts <= high_range
-            sums+=1
-        end
-    end
-    sums
+input = readlines(path)
+
+function extract_line_info(line)
+    # Regex FTW
+    low, high, char, password = match(r"([0-9]*)-([0-9]*) ([a-z]): ([a-z]*)", line).captures
+    parse(UInt16, low), parse(UInt16, high), only(collect(char)), password
 end
 
-@btime solution_part_1($path)
-
-sums2 = 0
-for line in eachline(path)
-    policy,password = split(line,':')
-    range, (c,)= split(policy)
-    low_pos,high_pos = parse.(UInt8,split(range,'-'))
-    println(low_pos,high_pos)
+function solution_part_1(line)
+    low, high, char, password  = extract_line_info(line)
+    low <= count(==(char), password) <= high
 end
-sums2
+
+function solution_part_2(line)
+    low, high, char, password  = extract_line_info(line)
+    (password[low] == char) ⊻ (password[high] == char)
+end
+
+@btime count(solution_part_1, input)
+@btime count(solution_part_2, input)
