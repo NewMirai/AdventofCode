@@ -30,7 +30,7 @@ function toboggan_solution(slopes::Array{Tuple{Int,Int},1}, input::Array{String,
     tree_count
 end
 
-@btime toboggan_solution((3, 1),input)
+@btime toboggan_solution((3, 1), input)
 @btime toboggan_solution([
     (1, 1),
     (3, 1),
