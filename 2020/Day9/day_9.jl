@@ -4,35 +4,33 @@ path = joinpath(@__DIR__, "datas", "input.txt")
 inputs = parse.(Int, readlines(path))
 
 # Part 1
-function part_1(inputs::Array{Int64,1}, n_preamble::Int64, n_previous::Int64)
+function solution(inputs::Array{Int,1}, n_preamble::Int, n_previous::Int)
     for i ∈ n_preamble + 1:length(inputs)
-        seen = BitSet()
+        seen = Set{Int}()
         found_number = false
         for j ∈ i - n_previous:i - 1
-            diff = inputs[i] - inputs[j]
-            if diff ∈ seen
+            @inbounds if inputs[i] - inputs[j] ∈ seen
                 found_number = true
             end
-            push!(seen, inputs[j])
+            @inbounds push!(seen, inputs[j])
         end
-        found_number == false && return inputs[i]
+        @inbounds found_number == false && return inputs[i]
     end
 end
-
-@btime part_1(inputs,25,25)
+ 
+@btime solution($inputs, 25, 25)
+solution_part_1 = solution(inputs, 25, 25)
 
 # Part 2
-
-function part_2(inputs::Array{Int64,1}, n_preamble::Int64, n_previous::Int64)
-    target = part_1(inputs, n_preamble,n_previous)
+function solution(inputs::Array{Int,1}, invalid_number::Int)
     low = 1
     high = 2
-    acc = sum(inputs[low:high])
-    while acc!=target
+    acc = sum(@view inputs[low:high])
+    while acc != invalid_number
         high += 1
-        acc += inputs[high]
-        if acc > target
-            acc -= inputs[low] + inputs[high]
+        @inbounds acc += inputs[high]
+        if acc > invalid_number
+            @inbounds acc -= inputs[low] + inputs[high]
             low += 1
             high -= 1
         end
@@ -40,4 +38,4 @@ function part_2(inputs::Array{Int64,1}, n_preamble::Int64, n_previous::Int64)
     sum(extrema(@view inputs[low:high]))
 end
 
-@btime part_2(inputs,25,25)
+@btime solution($inputs, $solution_part_1)
